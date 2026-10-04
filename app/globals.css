@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-ink: #111111;
+  --color-gold: #f5c400;
+  --color-gold-deep: #dfb000;
+  --color-mist: #f4f5f7;
+  --font-sans: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+  --font-script: var(--font-caveat), cursive;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #ffffff;
+  color: #161616;
+  font-family: var(--font-sans);
+}
+
+::selection {
+  background: #f5c400;
+  color: #111111;
+}
