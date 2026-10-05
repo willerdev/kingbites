@@ -78,3 +78,10 @@ CREATE TABLE IF NOT EXISTS order_events (
   created_at timestamptz NOT NULL DEFAULT now()
 );
 CREATE INDEX IF NOT EXISTS order_events_order_idx ON order_events(order_id, created_at);
+
+ALTER TABLE users ADD COLUMN IF NOT EXISTS allergies text NOT NULL DEFAULT '';
+ALTER TABLE users ADD COLUMN IF NOT EXISTS sugar_tolerance text NOT NULL DEFAULT '';
+ALTER TABLE users ADD COLUMN IF NOT EXISTS medical_restrictions text NOT NULL DEFAULT '';
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS allergies text NOT NULL DEFAULT '';
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS sugar_tolerance text NOT NULL DEFAULT '';
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS medical_restrictions text NOT NULL DEFAULT '';

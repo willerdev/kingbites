@@ -4,6 +4,7 @@ import { randomInt } from "node:crypto";
 import bcrypt from "bcryptjs";
 import { refresh } from "next/cache";
 import { sql } from "@/lib/db";
+import { toSugarTolerance } from "@/lib/dietary";
 import { cartTotals } from "@/lib/format";
 import { requireUser } from "@/lib/session";
 import type { PaymentMethod } from "@/lib/types";
@@ -60,9 +61,11 @@ export async function placeOrder(input: PlaceOrderInput): Promise<{ error: strin
     try {
       await sql.transaction([
         sql`
-          INSERT INTO orders (id, user_id, customer_name, phone, address, notes, payment_method, subtotal, delivery_fee, total)
+          INSERT INTO orders (id, user_id, customer_name, phone, address, notes, payment_method, subtotal, delivery_fee, total,
+                              allergies, sugar_tolerance, medical_restrictions)
           VALUES (${orderId}, ${user.id}, ${name}, ${phone}, ${address}, ${notes}, ${input.payment},
-                  ${totals.subtotal}, ${totals.deliveryFee}, ${totals.total})`,
+                  ${totals.subtotal}, ${totals.deliveryFee}, ${totals.total},
+                  ${user.allergies}, ${user.sugarTolerance}, ${user.medicalRestrictions})`,
         ...items.map(
           (item) => sql`
             INSERT INTO order_items (order_id, menu_item_id, name, image, price, qty)
@@ -102,6 +105,15 @@ export async function updateProfile(_state: FormResult, formData: FormData): Pro
   const address = String(formData.get("address") ?? "").trim();
   if (name.length < 2) return { error: "Enter your name." };
   await sql`UPDATE users SET name = ${name}, phone = ${phone}, address = ${address} WHERE id = ${user.id}`;
+  if (user.role === "customer" && formData.has("sugarTolerance")) {
+    const allergies = String(formData.get("allergies") ?? "").trim().slice(0, 500);
+    const sugarTolerance = toSugarTolerance(formData.get("sugarTolerance"));
+    const medicalRestrictions = String(formData.get("medicalRestrictions") ?? "").trim().slice(0, 500);
+    await sql`
+      UPDATE users SET allergies = ${allergies}, sugar_tolerance = ${sugarTolerance},
+        medical_restrictions = ${medicalRestrictions}
+      WHERE id = ${user.id}`;
+  }
   refresh();
   return { ok: "Profile saved." };
 }

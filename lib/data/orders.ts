@@ -1,5 +1,6 @@
 import "server-only";
 import { sql } from "@/lib/db";
+import { toSugarTolerance } from "@/lib/dietary";
 import type { Order, OrderEvent, OrderItem, OrderStatus, OrderWithItems, PaymentMethod, PaymentStatus } from "@/lib/types";
 
 type Row = Record<string, unknown>;
@@ -26,6 +27,11 @@ function toOrder(row: Row): Order {
     subtotal: Number(row.subtotal),
     deliveryFee: Number(row.delivery_fee),
     total: Number(row.total),
+    dietary: {
+      allergies: (row.allergies as string) ?? "",
+      sugarTolerance: toSugarTolerance(row.sugar_tolerance),
+      medicalRestrictions: (row.medical_restrictions as string) ?? "",
+    },
     driver: row.driver_id
       ? { id: row.driver_id as string, name: row.driver_name as string, phone: (row.driver_phone as string) ?? "" }
       : null,

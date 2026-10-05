@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { DriverSelect, StatusActions } from "@/components/admin/order-controls";
 import { AutoRefresh } from "@/components/auto-refresh";
+import { DietaryAlert } from "@/components/dietary-alert";
 import { PortalHeading } from "@/components/portal-shell";
 import { PaymentBadge } from "@/components/status-badge";
 import { adminStats, listDrivers, listOrders } from "@/lib/data/orders";
@@ -70,6 +71,7 @@ export default async function AdminDashboard() {
                           </li>
                         ))}
                       </ul>
+                      <DietaryAlert info={order.dietary} title="Health alert" compact />
                       {order.notes ? (
                         <p className="rounded-lg bg-amber-50 px-2 py-1 text-xs text-amber-900">“{order.notes}”</p>
                       ) : null}

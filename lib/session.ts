@@ -4,6 +4,7 @@ import { cache } from "react";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { sql } from "@/lib/db";
+import { toSugarTolerance } from "@/lib/dietary";
 import type { Role, SessionUser } from "@/lib/types";
 
 export const SESSION_COOKIE = "kb_session";
@@ -38,7 +39,8 @@ export const getCurrentUser = cache(async (): Promise<SessionUser | null> => {
   const token = (await cookies()).get(SESSION_COOKIE)?.value;
   if (!token) return null;
   const rows = await sql`
-    SELECT u.id, u.username, u.name, u.phone, u.address, u.role
+    SELECT u.id, u.username, u.name, u.phone, u.address, u.role,
+           u.allergies, u.sugar_tolerance, u.medical_restrictions
     FROM sessions s JOIN users u ON u.id = s.user_id
     WHERE s.token_hash = ${hashToken(token)} AND s.expires_at > now() AND u.active`;
   const row = rows[0];
@@ -50,6 +52,9 @@ export const getCurrentUser = cache(async (): Promise<SessionUser | null> => {
     phone: row.phone,
     address: row.address,
     role: row.role as Role,
+    allergies: row.allergies,
+    sugarTolerance: toSugarTolerance(row.sugar_tolerance),
+    medicalRestrictions: row.medical_restrictions,
   };
 });
 

@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { DriverSelect, PaymentToggle, StatusActions } from "@/components/admin/order-controls";
 import { AutoRefresh } from "@/components/auto-refresh";
 import { Bill } from "@/components/bill";
+import { DietaryAlert } from "@/components/dietary-alert";
 import { OrderTracker } from "@/components/order-tracker";
 import { PortalHeading } from "@/components/portal-shell";
 import { PrintButton } from "@/components/print-button";
@@ -48,6 +49,9 @@ export default async function AdminOrderPage({ params }: { params: Promise<{ id:
           <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-neutral-500">Payment</p>
           <PaymentToggle order={order} />
         </div>
+      </div>
+      <div className="mb-6">
+        <DietaryAlert info={order.dietary} title="Prepare with care — customer health requirements" />
       </div>
       {order.notes ? (
         <p className="mb-6 rounded-2xl bg-amber-50 px-4 py-3 text-sm text-amber-900">Customer note: “{order.notes}”</p>

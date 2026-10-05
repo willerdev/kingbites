@@ -35,6 +35,14 @@ export type CartLine = {
 
 export type Role = "customer" | "admin" | "driver";
 
+export type SugarTolerance = "" | "reduced" | "none";
+
+export type DietaryInfo = {
+  allergies: string;
+  sugarTolerance: SugarTolerance;
+  medicalRestrictions: string;
+};
+
 export type SessionUser = {
   id: string;
   username: string;
@@ -42,7 +50,7 @@ export type SessionUser = {
   phone: string;
   address: string;
   role: Role;
-};
+} & DietaryInfo;
 
 export type PaymentMethod = "momo" | "airtel" | "cash";
 export type PaymentStatus = "unpaid" | "paid";
@@ -76,6 +84,7 @@ export type Order = {
   subtotal: number;
   deliveryFee: number;
   total: number;
+  dietary: DietaryInfo;
   driver: { id: string; name: string; phone: string } | null;
   driverLocation: { lat: number; lng: number; seenAt: string } | null;
   createdAt: string;

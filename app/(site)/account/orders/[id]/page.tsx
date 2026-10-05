@@ -5,6 +5,7 @@ import { CheckCircle2 } from "lucide-react";
 import { cancelOrder } from "@/app/actions/orders";
 import { AutoRefresh } from "@/components/auto-refresh";
 import { Bill } from "@/components/bill";
+import { DietaryAlert } from "@/components/dietary-alert";
 import { OrderTracker } from "@/components/order-tracker";
 import { getOrder } from "@/lib/data/orders";
 import { isActive } from "@/lib/order-status";
@@ -59,6 +60,7 @@ export default async function OrderPage({
           ) : null}
         </div>
       </div>
+      <DietaryAlert info={order.dietary} title="Sent to the kitchen with this order" />
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_400px]">
         <OrderTracker order={order} />
         <Bill order={order} />
